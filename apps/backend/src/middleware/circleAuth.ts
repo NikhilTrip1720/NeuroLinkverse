@@ -22,7 +22,7 @@ export function requireCircleAdmin(req: AuthenticatedRequest, res: Response, nex
 function requireCircleRole(roles: string[]) {
   return async (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
     try {
-      const circleId = req.params.circleId;
+      const circleId = req.params['circleId'] as string;
       const userId = req.user.userId;
 
       const circle = await prisma.circle.findUnique({
@@ -35,7 +35,7 @@ function requireCircleRole(roles: string[]) {
       }
 
       const member = await prisma.circleMember.findUnique({
-        where: { userId_circleId: { userId, circleId } },
+        where: { userId_circleId: { userId, circleId: circleId } },
         select: { role: true },
       });
 

@@ -31,10 +31,10 @@ router.get(
   requireCircleMember as Parameters<typeof router.get>[1],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { circleId } = req.params;
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 50;
-      const before = req.query.before as string | undefined;
+      const circleId = req.params['circleId'] as string;
+      const page = parseInt(req.query['page'] as string) || 1;
+      const limit = parseInt(req.query['limit'] as string) || 50;
+      const before = req.query['before'] as string | undefined;
       const skip = (page - 1) * limit;
 
       const where = {
@@ -67,9 +67,9 @@ router.patch(
   validate(editMessageSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { messageId } = req.params;
+      const messageId = req.params['messageId'] as string;
       const userId = (req as AuthenticatedRequest).user.userId;
-      const { content } = req.body;
+      const { content } = req.body as { content: string };
 
       const message = await prisma.message.findUnique({
         where: { id: messageId },
@@ -98,7 +98,8 @@ router.delete(
   requireCircleMember as Parameters<typeof router.delete>[1],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { messageId, circleId } = req.params;
+      const messageId = req.params['messageId'] as string;
+      const circleId = req.params['circleId'] as string;
       const userId = (req as AuthenticatedRequest).user.userId;
 
       const message = await prisma.message.findUnique({
@@ -113,7 +114,8 @@ router.delete(
         select: { role: true },
       });
 
-      const canDelete = message.authorId === userId || ['ADMIN', 'MODERATOR'].includes(member?.role || '');
+      const canDelete =
+        message.authorId === userId || ['ADMIN', 'MODERATOR'].includes(member?.role ?? '');
       if (!canDelete) throw new ForbiddenError('Cannot delete this message');
 
       await prisma.message.delete({ where: { id: messageId } });

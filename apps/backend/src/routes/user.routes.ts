@@ -189,7 +189,7 @@ router.get('/leaderboard', async (_req: Request, res: Response, next: NextFuncti
       },
     });
 
-    const leaderboard = users.map((user, index) => ({
+    const leaderboard = users.map((user: typeof users[0], index: number) => ({
       rank: index + 1,
       user,
       xp: user.xp,
