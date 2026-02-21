@@ -1,0 +1,283 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CircleRole {
+  ADMIN
+  MODERATOR
+  MEMBER
+}
+
+enum MessageType {
+  TEXT
+  FILE
+  SYSTEM
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum ResourceType {
+  LINK
+  FILE
+  NOTE
+}
+
+enum NotificationType {
+  CIRCLE_INVITE
+  NEW_MESSAGE
+  TASK_ASSIGNED
+  TASK_COMPLETED
+  MEETING_STARTING
+  LEVEL_UP
+  ACHIEVEMENT
+  SYSTEM
+}
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  username        String   @unique
+  displayName     String
+  passwordHash    String
+  avatarUrl       String?
+  bio             String?
+  isEmailVerified Boolean  @default(false)
+  emailVerifyToken String?
+  resetToken      String?
+  resetTokenExpiry DateTime?
+  level           Int      @default(1)
+  xp              Int      @default(0)
+  streak          Int      @default(0)
+  lastActiveAt    DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  circleMembers   CircleMember[]
+  createdCircles  Circle[]       @relation("CircleCreator")
+  messages        Message[]
+  createdTasks    Task[]         @relation("TaskCreator")
+  assignedTasks   Task[]         @relation("TaskAssignee")
+  resources       Resource[]
+  studyPlans      StudyPlan[]
+  notifications   Notification[]
+  achievements    UserAchievement[]
+  sentInvites     CircleInvite[]   @relation("InviteSender")
+  receivedInvites CircleInvite[]   @relation("InviteReceiver")
+  refreshTokens   RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+model Circle {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  subject     String
+  isPrivate   Boolean  @default(false)
+  maxMembers  Int      @default(20)
+  inviteCode  String   @unique @default(cuid())
+  creatorId   String
+  creator     User     @relation("CircleCreator", fields: [creatorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members     CircleMember[]
+  messages    Message[]
+  tasks       Task[]
+  resources   Resource[]
+  studyPlans  StudyPlan[]
+  invites     CircleInvite[]
+  meetings    Meeting[]
+
+  @@map("circles")
+}
+
+model CircleMember {
+  userId    String
+  circleId  String
+  role      CircleRole @default(MEMBER)
+  joinedAt  DateTime   @default(now())
+
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  circle    Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, circleId])
+  @@map("circle_members")
+}
+
+model CircleInvite {
+  id         String   @id @default(cuid())
+  circleId   String
+  senderId   String
+  receiverId String
+  status     String   @default("PENDING")
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+
+  circle   Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  sender   User   @relation("InviteSender", fields: [senderId], references: [id])
+  receiver User   @relation("InviteReceiver", fields: [receiverId], references: [id])
+
+  @@unique([circleId, receiverId])
+  @@map("circle_invites")
+}
+
+model Message {
+  id        String      @id @default(cuid())
+  content   String
+  circleId  String
+  authorId  String
+  type      MessageType @default(TEXT)
+  fileUrl   String?
+  fileName  String?
+  isEdited  Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  circle  Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  author  User   @relation(fields: [authorId], references: [id])
+
+  @@index([circleId, createdAt])
+  @@map("messages")
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  circleId    String
+  creatorId   String
+  assigneeId  String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  circle   Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  creator  User   @relation("TaskCreator", fields: [creatorId], references: [id])
+  assignee User?  @relation("TaskAssignee", fields: [assigneeId], references: [id])
+
+  @@index([circleId])
+  @@map("tasks")
+}
+
+model Resource {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  url         String?
+  fileUrl     String?
+  fileName    String?
+  fileSize    Int?
+  type        ResourceType @default(LINK)
+  circleId    String
+  uploaderId  String
+  createdAt   DateTime     @default(now())
+
+  circle   Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  uploader User   @relation(fields: [uploaderId], references: [id])
+
+  @@index([circleId])
+  @@map("resources")
+}
+
+model StudyPlan {
+  id        String   @id @default(cuid())
+  title     String
+  subject   String
+  duration  String
+  level     String
+  content   Json
+  userId    String
+  circleId  String?
+  createdAt DateTime @default(now())
+
+  user   User    @relation(fields: [userId], references: [id])
+  circle Circle? @relation(fields: [circleId], references: [id])
+
+  @@index([userId])
+  @@map("study_plans")
+}
+
+model Meeting {
+  id        String   @id @default(cuid())
+  title     String
+  roomId    String   @unique
+  circleId  String
+  startTime DateTime
+  endTime   DateTime?
+  createdAt DateTime @default(now())
+
+  circle Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+
+  @@index([circleId])
+  @@map("meetings")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean          @default(false)
+  link      String?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+model Achievement {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String
+  icon        String
+  xpReward    Int    @default(0)
+  condition   String
+
+  userAchievements UserAchievement[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  userId        String
+  achievementId String
+  earnedAt      DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id])
+
+  @@id([userId, achievementId])
+  @@map("user_achievements")
+}
