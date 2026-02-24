@@ -9,7 +9,6 @@ import { Avatar } from '@/components/ui/Avatar';
 import { cn } from '@/lib/utils';
 import api from '@/lib/api';
 import { disconnectSocket } from '@/lib/socket';
-import toast from 'react-hot-toast';
 
 const navItems = [
   { to: '/dashboard', icon: Home, label: 'Dashboard' },
@@ -27,7 +26,9 @@ export function Sidebar() {
   const handleLogout = async () => {
     try {
       await api.post('/auth/logout');
-    } catch {}
+    } catch {
+      // Ignore logout API errors - proceed with local logout
+    }
     disconnectSocket();
     logout();
     window.location.href = '/login';

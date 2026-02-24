@@ -42,8 +42,8 @@ export function AIPlannerPage() {
         <form onSubmit={handleSubmit((d) => generate.mutate(d))} className="card p-6 space-y-4">
           <Input {...register('subject')} label="Subject" placeholder="React, Machine Learning..." error={errors.subject?.message} />
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-slate-300">Duration</label>
-            <select {...register('duration')} className="input">
+            <label htmlFor="duration" className="block text-sm font-medium text-slate-300">Duration</label>
+            <select id="duration" {...register('duration')} className="input">
               <option value="1_week">1 Week</option>
               <option value="2_weeks">2 Weeks</option>
               <option value="1_month">1 Month</option>
@@ -52,8 +52,8 @@ export function AIPlannerPage() {
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-slate-300">Level</label>
-            <select {...register('level')} className="input">
+            <label htmlFor="level" className="block text-sm font-medium text-slate-300">Level</label>
+            <select id="level" {...register('level')} className="input">
               <option value="beginner">Beginner</option>
               <option value="intermediate">Intermediate</option>
               <option value="advanced">Advanced</option>

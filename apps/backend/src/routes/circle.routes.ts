@@ -173,7 +173,7 @@ router.get('/:circleId', authenticate, async (req: Request, res: Response, next:
 
     if (!circle) throw new NotFoundError('Circle');
 
-    const isMember = circle.members.some((m) => m.userId === userId);
+    const isMember = circle.members.some((m: { userId: string }) => m.userId === userId);
     if (circle.isPrivate && !isMember) {
       throw new ForbiddenError('This circle is private');
     }

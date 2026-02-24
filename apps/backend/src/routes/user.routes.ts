@@ -11,7 +11,7 @@ import { updateProfileSchema } from '@skillshare-circles/shared';
 import { sendSuccess, sendPaginated } from '../utils/response';
 import { NotFoundError, ConflictError } from '../utils/errors';
 import { env } from '../config/env';
-import { getLevelFromXp, getXpForNextLevel, getProgressToNextLevel } from '../utils/xp';
+import { getXpForNextLevel, getProgressToNextLevel } from '../utils/xp';
 import { sanitizeFilename } from '../utils/sanitize';
 
 const router = Router();

@@ -29,7 +29,7 @@ export function ForgotPasswordPage() {
         <div className="card p-8 text-center max-w-md w-full">
           <Mail className="h-12 w-12 text-primary-400 mx-auto mb-4" aria-hidden="true" />
           <h1 className="text-xl font-bold text-slate-100 mb-2">Check your email</h1>
-          <p className="text-slate-400 mb-4">If an account exists, we've sent a password reset link.</p>
+          <p className="text-slate-400 mb-4">If an account exists, we&apos;ve sent a password reset link.</p>
           <Link to="/login" className="text-primary-400 hover:text-primary-300">Back to login</Link>
         </div>
       </div>

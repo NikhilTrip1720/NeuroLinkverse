@@ -4,7 +4,6 @@ import fs from 'fs/promises';
 import multer from 'multer';
 import { prisma } from '../config/prisma';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth';
-import { validate } from '../middleware/validate';
 import { requireCircleMember } from '../middleware/circleAuth';
 import { uploadLimiter } from '../middleware/rateLimiter';
 import { z } from 'zod';

@@ -4,7 +4,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { Spinner } from '@/components/ui/Spinner';
 
 export function ProfilePage() {
-  const { username } = useParams();
+  useParams();
   const { user } = useAuthStore();
   const displayUser = user;
 

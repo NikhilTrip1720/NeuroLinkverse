@@ -81,7 +81,7 @@ export function CirclesPage() {
         !myCircles?.length ? (
           <div className="card p-12 text-center">
             <Users className="h-12 w-12 text-slate-600 mx-auto mb-4" aria-hidden="true" />
-            <p className="text-slate-400">You haven't joined any circles yet.</p>
+            <p className="text-slate-400">You haven&apos;t joined any circles yet.</p>
             <button onClick={() => setTab('discover')} className="text-primary-400 hover:text-primary-300 text-sm mt-2">
               Discover circles →
             </button>

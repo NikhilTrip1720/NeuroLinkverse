@@ -8,11 +8,10 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Avatar } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
-import { formatMessageTime, formatRelativeTime, cn } from '@/lib/utils';
+import { formatMessageTime, cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/authStore';
 import { getSocket, joinCircle, leaveCircle, sendMessage, startTyping, stopTyping } from '@/lib/socket';
 import type { Message, Task } from '@skillshare-circles/shared';
-import { useQueryClient } from '@tanstack/react-query';
 
 export function CircleDetailPage() {
   const { circleId } = useParams<{ circleId: string }>();
@@ -55,7 +54,7 @@ export function CircleDetailPage() {
         <Tabs.Content value="chat"><ChatTab circleId={circleId!} /></Tabs.Content>
         <Tabs.Content value="tasks"><TasksTab circleId={circleId!} /></Tabs.Content>
         <Tabs.Content value="resources"><ResourcesTab circleId={circleId!} /></Tabs.Content>
-        <Tabs.Content value="meetings"><MeetingsTab circleId={circleId!} circle={circle} /></Tabs.Content>
+        <Tabs.Content value="meetings"><MeetingsTab circleId={circleId!} /></Tabs.Content>
         <Tabs.Content value="members"><MembersTab circle={circle} /></Tabs.Content>
       </Tabs.Root>
     </div>
@@ -69,7 +68,6 @@ function ChatTab({ circleId }: { circleId: string }) {
   const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimer = useRef<ReturnType<typeof setTimeout>>();
-  const queryClient = useQueryClient();
   const { data, isLoading } = useMessages(circleId);
 
   const allMessages = [
@@ -245,7 +243,7 @@ function ResourcesTab({ circleId }: { circleId: string }) {
   );
 }
 
-function MeetingsTab({ circleId, circle }: { circleId: string; circle: { name: string } }) {
+function MeetingsTab({ circleId }: { circleId: string }) {
   return (
     <div className="card p-8 text-center">
       <Video className="h-12 w-12 text-primary-500 mx-auto mb-4" aria-hidden="true" />

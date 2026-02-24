@@ -70,7 +70,7 @@ export function LoginPage() {
           </Button>
 
           <p className="text-center text-sm text-slate-400">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link to="/register" className="text-primary-400 hover:text-primary-300 font-medium transition-colors">
               Create one
             </Link>

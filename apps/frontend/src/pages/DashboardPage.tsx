@@ -3,7 +3,6 @@ import { Users, CheckSquare, TrendingUp, Plus, BookOpen, Sparkles } from 'lucide
 import { useMyCircles } from '@/hooks/useCircles';
 import { useAuthStore } from '@/stores/authStore';
 import { Button } from '@/components/ui/Button';
-import { Avatar } from '@/components/ui/Avatar';
 import { Spinner } from '@/components/ui/Spinner';
 import { formatRelativeTime, truncate } from '@/lib/utils';
 
@@ -20,7 +19,7 @@ export function DashboardPage() {
           <h1 className="text-2xl font-bold text-slate-100">
             Welcome back, <span className="text-gradient">{user?.displayName}</span>! 👋
           </h1>
-          <p className="text-slate-400 mt-1">Here's what's happening in your circles</p>
+          <p className="text-slate-400 mt-1">Here&apos;s what&apos;s happening in your circles</p>
         </div>
         <div className="flex gap-2">
           <Link to="/ai-planner">
