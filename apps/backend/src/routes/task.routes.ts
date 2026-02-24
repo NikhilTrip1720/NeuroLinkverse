@@ -32,7 +32,7 @@ router.get(
   requireCircleMember as Parameters<typeof router.get>[1],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { circleId } = req.params;
+      const circleId = req.params['circleId'] as string;
       const status = req.query.status as string | undefined;
       const assigneeId = req.query.assigneeId as string | undefined;
 
@@ -60,7 +60,7 @@ router.post(
   validate(createTaskSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { circleId } = req.params;
+      const circleId = req.params['circleId'] as string;
       const userId = (req as AuthenticatedRequest).user.userId;
       const { title, description, assigneeId, priority, dueDate } = req.body;
 
@@ -111,7 +111,7 @@ router.get(
   requireCircleMember as Parameters<typeof router.get>[1],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { taskId } = req.params;
+      const taskId = req.params['taskId'] as string;
 
       const task = await prisma.task.findUnique({ where: { id: taskId }, select: TASK_SELECT });
       if (!task) throw new NotFoundError('Task');
@@ -130,7 +130,8 @@ router.patch(
   validate(updateTaskSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { taskId, circleId } = req.params;
+      const taskId = req.params['taskId'] as string;
+      const circleId = req.params['circleId'] as string;
       const userId = (req as AuthenticatedRequest).user.userId;
 
       const existingTask = await prisma.task.findUnique({
@@ -194,7 +195,8 @@ router.delete(
   requireCircleMember as Parameters<typeof router.delete>[1],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { taskId, circleId } = req.params;
+      const taskId = req.params['taskId'] as string;
+      const circleId = req.params['circleId'] as string;
       const userId = (req as AuthenticatedRequest).user.userId;
 
       const task = await prisma.task.findUnique({

@@ -27,11 +27,17 @@ export function useDiscoverCircles(search?: string, subject?: string) {
   });
 }
 
+export type CircleMemberDetail = {
+  userId: string;
+  role: string;
+  user?: { id: string; displayName: string; avatarUrl?: string | null; level: number };
+};
+
 export function useCircle(circleId: string) {
   return useQuery({
     queryKey: ['circles', circleId],
     queryFn: async () => {
-      const res = await api.get<{ data: Circle & { members: unknown[]; isMember: boolean } }>(`/circles/${circleId}`);
+      const res = await api.get<{ data: Circle & { members: CircleMemberDetail[]; isMember: boolean } }>(`/circles/${circleId}`);
       return res.data.data;
     },
     enabled: !!circleId,
@@ -145,7 +151,8 @@ export function useMessages(circleId: string) {
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => {
       if (!lastPage.hasMore || lastPage.items.length === 0) return undefined;
-      return lastPage.items[0]?.createdAt as string | undefined;
+      const oldest = lastPage.items[0]?.createdAt;
+      return oldest ? (oldest instanceof Date ? oldest.toISOString() : String(oldest)) : undefined;
     },
     enabled: !!circleId,
   });

@@ -3,8 +3,6 @@ import { Bell } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { Avatar } from '@/components/ui/Avatar';
-import { getProgressToNextLevel } from '@skillshare-circles/shared';
-
 function getProgressToNextLevelFn(xp: number): number {
   const getLevelFromXp = (x: number) => Math.floor(Math.sqrt(x / 100)) + 1;
   const getXpForLevel = (l: number) => Math.pow(l - 1, 2) * 100;

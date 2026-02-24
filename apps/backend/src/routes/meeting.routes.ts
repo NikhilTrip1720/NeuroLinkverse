@@ -21,7 +21,7 @@ router.get(
   requireCircleMember as Parameters<typeof router.get>[1],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { circleId } = req.params;
+      const circleId = req.params['circleId'] as string;
 
       const meetings = await prisma.meeting.findMany({
         where: { circleId },
@@ -43,7 +43,7 @@ router.post(
   validate(createMeetingSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { circleId } = req.params;
+      const circleId = req.params['circleId'] as string;
       const { title, startTime } = req.body;
       const roomId = `skillshare-${circleId}-${uuidv4()}`.substring(0, 50);
 
@@ -69,7 +69,7 @@ router.get(
   requireCircleMember as Parameters<typeof router.get>[1],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { meetingId } = req.params;
+      const meetingId = req.params['meetingId'] as string;
 
       const meeting = await prisma.meeting.findUnique({ where: { id: meetingId } });
       if (!meeting) throw new NotFoundError('Meeting');
@@ -87,7 +87,8 @@ router.delete(
   requireCircleMember as Parameters<typeof router.delete>[1],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { meetingId, circleId } = req.params;
+      const meetingId = req.params['meetingId'] as string;
+      const circleId = req.params['circleId'] as string;
       const userId = (req as AuthenticatedRequest).user.userId;
 
       const member = await prisma.circleMember.findUnique({

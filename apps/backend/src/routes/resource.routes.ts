@@ -50,7 +50,7 @@ router.get(
   requireCircleMember as Parameters<typeof router.get>[1],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { circleId } = req.params;
+      const circleId = req.params['circleId'] as string;
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
       const type = req.query.type as string | undefined;
@@ -87,7 +87,7 @@ router.post(
   upload.single('file'),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { circleId } = req.params;
+      const circleId = req.params['circleId'] as string;
       const userId = (req as AuthenticatedRequest).user.userId;
 
       const body = createResourceSchema.parse(req.body);
@@ -143,7 +143,8 @@ router.delete(
   requireCircleMember as Parameters<typeof router.delete>[1],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { resourceId, circleId } = req.params;
+      const resourceId = req.params['resourceId'] as string;
+      const circleId = req.params['circleId'] as string;
       const userId = (req as AuthenticatedRequest).user.userId;
 
       const resource = await prisma.resource.findUnique({

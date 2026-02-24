@@ -377,7 +377,7 @@ router.patch(
       const circleId = req.params['circleId'] as string;
       const userId = req.params['userId'] as string;
       const requesterId = (req as AuthenticatedRequest).user.userId;
-      const { role } = req.body as { role: string };
+      const { role } = req.body as { role: 'ADMIN' | 'MODERATOR' | 'MEMBER' };
 
       if (userId === requesterId) throw new ForbiddenError('Cannot change your own role');
 

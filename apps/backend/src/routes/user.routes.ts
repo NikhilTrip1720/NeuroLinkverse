@@ -31,7 +31,7 @@ const upload = multer({
 
 router.get('/profile/:username', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { username } = req.params;
+    const username = req.params['username'] as string;
 
     const user = await prisma.user.findUnique({
       where: { username },

@@ -36,7 +36,7 @@ router.post(
           subject,
           duration,
           level,
-          content,
+          content: content as object,
           userId,
           circleId: circleId || null,
         },
@@ -76,7 +76,7 @@ router.get(
   authenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const id = req.params['id'] as string;
       const userId = (req as AuthenticatedRequest).user.userId;
 
       const studyPlan = await prisma.studyPlan.findFirst({

@@ -11,7 +11,7 @@ export function DashboardPage() {
   const { user } = useAuthStore();
   const { data: circles, isLoading } = useMyCircles();
 
-  const totalMembers = circles?.reduce((sum, c) => sum + (c as { _count?: { members: number } })._count?.members || 0, 0) || 0;
+  const totalMembers = circles?.reduce((sum, c) => sum + ((c as { _count?: { members: number } })._count?.members ?? 0), 0) ?? 0;
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-fade-in">
@@ -23,12 +23,11 @@ export function DashboardPage() {
           <p className="text-slate-400 mt-1">Here's what's happening in your circles</p>
         </div>
         <div className="flex gap-2">
-          <Button as={Link as unknown as 'button'} onClick={() => {}} variant="secondary" leftIcon={<Sparkles className="h-4 w-4" />}>
-            <Link to="/ai-planner" className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4" aria-hidden="true" />
+          <Link to="/ai-planner">
+            <Button variant="secondary" leftIcon={<Sparkles className="h-4 w-4" />}>
               AI Planner
-            </Link>
-          </Button>
+            </Button>
+          </Link>
           <Link to="/circles">
             <Button leftIcon={<Plus className="h-4 w-4" />}>New Circle</Button>
           </Link>
